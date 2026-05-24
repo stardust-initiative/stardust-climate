@@ -1,0 +1,28 @@
+{
+    "github": {
+      "username": "YOUR_GITHUB_USERNAME",
+      "token": "YOUR_GITHUB_PAT",
+      "organization_name": "stardust-initiative",
+      "materials_repository_name": "Materials_optical_tables",
+      "climate_database_name": "climate_database_files"
+    },
+    "project_name": "climate_runs_ext",
+    "aerosols_table_dict":  {
+      "silica": {
+        "mat_path": "nanoparticles_tables/stardust_particles_silica_climlab.nc"
+      },
+      "sulfate": {
+        "mat_path": "nanoparticles_tables/stardust_particles_H2SO4_75_climlab.nc"
+      },
+      "calcite average ray": {
+        "mat_path": "nanoparticles_tables/stardust_particles_calcite_AvgRay_climlab.nc"
+      },
+      "mars black": {
+        "mat_path": "nanoparticles_tables/stardust_particles_mars_black_climlab.nc"
+      },
+      "alpha-SiC": {
+        "mat_path": "nanoparticles_tables/stardust_particles_alpha_silicon_carbide_climlab.nc"
+      }
+    },
+    "climate_database_files_folder": "/path/to/climate_database_files"
+  }

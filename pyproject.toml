@@ -1,0 +1,45 @@
+# ---------------------------------------------------------------------------
+# climate_runs_ext
+#
+# Lean climate model runner built on:
+#   - climlab                                 (core column-model framework)
+#   - climlab-stardust-extension              (extended classes)
+#   - climlab-rrtmg (Stardust fork)           (Fortran RRTMG wrappers)
+#   - climlab-sbm-convection (Stardust fork)  (Simplified Betts-Miller)
+#
+# Library + entry points consumed by the Stardust paper's SARF pipeline.
+# ---------------------------------------------------------------------------
+
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "climate_runs_ext"
+version = "0.1.1"
+description = "Lean climate model runner using climlab + climlab-stardust-extension"
+requires-python = ">=3.9"
+dependencies = [
+    "climlab",
+    "climlab-rrtmg @ git+https://github.com/stardust-initiative/climlab-rrtmg_stardust.git@v0.5.0",
+    "climlab-sbm-convection @ git+https://github.com/stardust-initiative/climlab-sbm-convection_stardust.git@v0.3.0",
+    "climlab-stardust-extension @ git+https://github.com/stardust-initiative/climlab-stardust-extension.git@v0.1.1",
+    "stardust-2d-inputs @ git+https://github.com/stardust-initiative/stardust-2d-inputs.git@v0.1.1",
+    "numpy",
+    "xarray",
+    "pooch",
+    "scipy",
+    "scikit-image",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[project.scripts]
+climate-response = "examples.climatic_response_annual_avg:main"
+
+[tool.setuptools.packages.find]
+include = ["climate_runs_ext*", "examples"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
