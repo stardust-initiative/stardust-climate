@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+dist/
+build/
+.pytest_cache/
+*.so
+config.json
+output/
+SESSION_SUMMARY.md
+
+# Assistant session scratch
+.claude/
+claude_session.txt
