@@ -13,3 +13,11 @@ SESSION_SUMMARY.md
 # Assistant session scratch
 .claude/
 claude_session.txt
+
+# Local editor settings and generated run products (stored in model-data).
+/.vscode/
+/artifacts/
+/reproduction/
+
+# Private CI companion checkouts
+.ci-deps/

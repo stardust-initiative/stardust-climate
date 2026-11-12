@@ -55,7 +55,7 @@ Most users don't need any configuration. The example workflow loads
 input data via the
 [`stardust-2d-inputs`](https://github.com/stardust-initiative/stardust-2d-inputs)
 engine, which fetches files from the public Zenodo deposit
-([10.5281/zenodo.20271742](https://doi.org/10.5281/zenodo.20271742))
+([10.5281/zenodo.24163981](https://doi.org/10.5281/zenodo.24163981))
 on demand and verifies each file by SHA-256. No credentials required.
 
 The engine's backend (local cache / GCS / Zenodo) is selected by a
@@ -168,7 +168,7 @@ python -m examples.climatic_response_annual_avg --help
 The workflow needs ERA5 zonal-mean monthly fields, transport drivers
 (eddy diffusivity, tropopause climatology), and RRTMG-banded aerosol
 optical-property tables. These are fetched on demand from the
-[Zenodo deposit](https://doi.org/10.5281/zenodo.20271742) via the
+[Zenodo deposit](https://doi.org/10.5281/zenodo.24163981) via the
 `stardust-2d-inputs` engine, content-addressed and SHA-256-verified.
 
 No GitHub credentials, no local data clone, no manual downloads
@@ -190,7 +190,7 @@ computation.
 - [`climlab-stardust-extension @ v0.1.0`](https://github.com/stardust-initiative/climlab-stardust-extension) — extended radiation/convection/dynamics classes.
 - [`climlab-rrtmg @ v0.5.0`](https://github.com/stardust-initiative/climlab-rrtmg_stardust) — Stardust fork of the Fortran RRTMG wrappers.
 - [`climlab-sbm-convection @ v0.3.0`](https://github.com/stardust-initiative/climlab-sbm-convection_stardust) — Stardust fork of the Fortran Simplified Betts–Miller scheme.
-- [`stardust-2d-inputs @ v0.1.0`](https://github.com/stardust-initiative/stardust-2d-inputs) — input-data loader (used at runtime via `core.loader`); data via [Zenodo `10.5281/zenodo.20271742`](https://doi.org/10.5281/zenodo.20271742).
+- [`stardust-2d-inputs @ v0.2.0`](https://github.com/stardust-initiative/stardust-2d-inputs) — input-data loader (used at runtime via `core.loader`); data via [Zenodo `10.5281/zenodo.24163981`](https://doi.org/10.5281/zenodo.24163981).
 - numpy, xarray, scipy, scikit-image, pooch, requests.
 
 All Stardust packages are URL-pinned in `pyproject.toml`; `pip install`
