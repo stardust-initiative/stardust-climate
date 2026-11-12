@@ -17,7 +17,8 @@ from climlab import constants as const
 from climate_runs_ext.utils.data_loading import load_xr_from_repo
 
 
-def get_atm_data(config, time_type=1, snr_limit=1.0, data_year=-1):
+def get_atm_data(config, time_type=1, snr_limit=1.0, data_year=-1,
+                 diffusion_scheme="nominal", state=None, isentropic_file=None):
     r"""Load and assemble the 2-D transport driver fields.
 
     Parameters
@@ -31,6 +32,19 @@ def get_atm_data(config, time_type=1, snr_limit=1.0, data_year=-1):
     snr_limit : float
         Kzz is replaced by its floor where its signal-to-noise ratio
         exceeds this value.
+    diffusion_scheme : str
+        "isentropic_mean_first_reduced" prepares the supplied unmodified raw
+        2008–2017 file on the simulation grid; this is the aerosol driver's default.
+        "nominal" preserves established floors, SNR and zero cross diffusion.
+        "isentropic_transform_first_reduced" selects the experimental reduced
+        tensor from pinned engine datasets, retaining the reference advection.
+        "isentropic_transform_first_reduced_2008_2017" selects a grid-pinned
+        monthly climatology prepared from all120 monthly tensor fields.
+    state : dict, optional
+        Simulation state; required for raw-file diffusion preparation.
+    isentropic_file : str, optional
+        Unmodified ERA5 input, otherwise STARDUST_ISENTROPIC_FILE or the standard
+        filename in the working directory. Never modified by this loader.
     data_year : int
         With ``time_type < 2``: ``-1`` averages over all years, otherwise
         the given calendar year is selected.
@@ -41,6 +55,32 @@ def get_atm_data(config, time_type=1, snr_limit=1.0, data_year=-1):
         Residual vertical and meridional winds, the three eddy-diffusivity
         components (Kzz, Kyy, Kyz), and the tropopause pressure.
     """
+    from .isentropic_runtime import DEFAULT_DIFFUSION_SCHEME, load_climatology as load_raw_climatology
+    if diffusion_scheme == DEFAULT_DIFFUSION_SCHEME:
+        if time_type != 1 or data_year != -1:
+            raise ValueError('Mean-first reduced diffusion requires time_type=1 and data_year=-1 (2008–2017 monthly climatology)')
+        if state is None:
+            raise ValueError('Mean-first reduced raw-file preparation requires the simulation state/grid')
+        pp, yy, yp = load_raw_climatology(state, isentropic_file)
+        w, v, _, _, _, trop = get_atm_data(config, time_type, snr_limit, data_year)
+        return w, v, pp, yy, yp, trop
+    if diffusion_scheme != "nominal":
+        from .prepared_isentropic_climatology import SCHEMES as CLIMATOLOGY_SCHEMES, load_climatology
+        if diffusion_scheme in CLIMATOLOGY_SCHEMES:
+            if time_type != 1 or data_year != -1:
+                raise ValueError('Prepared 2008–2017 diffusion requires the matching monthly climatology: time_type=1, data_year=-1')
+            w, v, _, _, _, trop = get_atm_data(config, time_type, snr_limit, data_year)
+            pp, yy, yp = load_climatology(diffusion_scheme)
+            return w, v, pp, yy, yp, trop
+        from .isentropic_diffusion import SCHEME, FULL_SCHEME, load_tensor
+        if diffusion_scheme not in (SCHEME,FULL_SCHEME):
+            raise ValueError(f"Unknown diffusion scheme: {diffusion_scheme}")
+        if time_type != 1 or data_year != 2010:
+            raise ValueError("Isentropic tensors require cyclic 2010 forcing")
+        w, v, _, _, _, trop = get_atm_data(config, time_type, snr_limit, data_year)
+        pp, yy, yp = load_tensor('reduced' if diffusion_scheme==SCHEME else 'full')
+        return w, v, pp, yy, yp, trop
+
     ds = load_xr_from_repo('diffusion_ml_TEMdecomp_raw_2008_2017', config)
     tropopause = load_xr_from_repo(
         'tropopause_ERA5_zonal_mean_2008_2017', config,

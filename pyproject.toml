@@ -16,15 +16,16 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "climate_runs_ext"
-version = "0.1.2"
+version = "0.2.0"
 description = "Lean climate model runner using climlab + climlab-stardust-extension"
 requires-python = ">=3.9"
 dependencies = [
     "climlab",
+    "six",  # climlab imports six but does not declare it in its metadata.
     "climlab-rrtmg @ git+https://github.com/stardust-initiative/climlab-rrtmg_stardust.git@v0.5.0",
     "climlab-sbm-convection @ git+https://github.com/stardust-initiative/climlab-sbm-convection_stardust.git@v0.3.0",
-    "climlab-stardust-extension @ git+https://github.com/stardust-initiative/climlab-stardust-extension.git@v0.1.2",
-    "stardust-2d-inputs @ git+https://github.com/stardust-initiative/stardust-2d-inputs.git@v0.1.1",
+    "climlab-stardust-extension @ git+https://github.com/stardust-initiative/climlab-stardust-extension.git@v0.2.0",
+    "stardust-2d-inputs @ git+https://github.com/stardust-initiative/stardust-2d-inputs.git@v0.2.0",
     "numpy",
     "xarray",
     "pooch",
