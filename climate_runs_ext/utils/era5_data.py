@@ -94,8 +94,13 @@ def Smooth(field, window_length=10, polyorder=1, axis=0):
 # Insolation / albedo / ocean heat
 # ---------------------------------------------------------------------------
 
-def Seasonal_insolation(lat, seas):
-    """Annual or seasonal mean insolation via climlab daily_insolation."""
+def seasonal_insolation_days(seas):
+    """Dates defining the fixed illumination and aerosol angular averages.
+
+    Preserve the existing climlab fractional-month sampling, including the
+    historical annual grid. Sharing these dates avoids constructing aerosol
+    coefficients from an annual average for a seasonally illuminated model.
+    """
     if seas == SeasonTypes.Annual:
         days = np.linspace(0, const.days_per_year, 365)
     else:
@@ -107,7 +112,12 @@ def Seasonal_insolation(lat, seas):
                 const.days_per_year,
             ))
         days = np.array(days)
-    insolation = np.mean(daily_insolation(lat, days), axis=1)
+    return days
+
+
+def Seasonal_insolation(lat, seas):
+    """Annual or seasonal mean insolation via climlab daily_insolation."""
+    insolation = np.mean(daily_insolation(lat, seasonal_insolation_days(seas)), axis=1)
     return insolation
 
 
