@@ -16,7 +16,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "climate_runs_ext"
-version = "0.2.1"
+version = "0.2.2"
 description = "Lean climate model runner using climlab + climlab-stardust-extension"
 requires-python = ">=3.9"
 dependencies = [
