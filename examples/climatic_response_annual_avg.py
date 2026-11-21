@@ -38,7 +38,7 @@ from climlab.utils import constants as const
 from climate_runs_ext import load_project_config
 from climate_runs_ext.reference_model import get_ref
 from climate_runs_ext.utils.era5_data import (
-    SeasonTypes, lat_avg, Smooth, era5_annual_initial_state,
+    SeasonTypes, lat_avg, Smooth, era5_annual_initial_state, seasonal_insolation_days,
 )
 from climate_runs_ext.utils.state_io import (
     update_model_from_xr,
@@ -221,6 +221,7 @@ def main(argv=None):
     is_sarf = (erf_mode == 'sarf')
 
     season_str = args.season
+    coefficient_days = seasonal_insolation_days(season_str)
     n_cycle = args.n_cycle
     t_cycle_days = args.t_cycle_days
     t_avg_days = args.t_avg_days
@@ -326,7 +327,7 @@ def main(argv=None):
         aerosols_table_obj = AerosolsOptDepTables(
             aerosol_instance_list=loaded.aerosol_instance_list,
             domain=rad.Tatm.domain,
-            coszen=rad.coszen,
+            coszen=rad.coszen, days=coefficient_days,
             **config['aerosols_input_dict'],
         )
     elif layer_state_file or radius_mapping_file:
@@ -352,11 +353,11 @@ def main(argv=None):
         aerosols_table_obj = AerosolsOptDepTables(
             aerosol_instance_list=[aerosol_instance(material_name, r_m, vmr)],
             domain=rad.Tatm.domain,
-            coszen=rad.coszen,
+            coszen=rad.coszen, days=coefficient_days,
             **config['aerosols_input_dict'],
         )
     rad_with_aero_param_dict = get_radiation_with_aerosols_params(
-        rad.state, aerosols_table_obj, rad.coszen,
+        rad.state, aerosols_table_obj, rad.coszen, days=coefficient_days,
     )
 
     # In sarf mode we disable cloud feedback so clouds stay static at the
@@ -542,11 +543,11 @@ def main(argv=None):
                 aerosol_instance(material_name, r_m, vmr_stab),
             ],
             domain=rad.Tatm.domain,
-            coszen=rad.coszen,
+            coszen=rad.coszen, days=coefficient_days,
             **config['aerosols_input_dict'],
         )
         rad_with_aero_param_dict_stab = get_radiation_with_aerosols_params(
-            rad.state, aerosols_table_obj_stab, rad.coszen,
+            rad.state, aerosols_table_obj_stab, rad.coszen, days=coefficient_days,
         )
 
         model_fxco2_layer = get_ref(
